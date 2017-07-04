@@ -30,10 +30,7 @@
             </intent-filter>
             <intent-filter>
                 <data
-                    android:host="*"
-                    android:scheme="http" />
-                <data
-                    android:host="*"
+                    android:host="www.amazon.in"
                     android:scheme="https" />
 
                 <action android:name="android.intent.action.VIEW" />
