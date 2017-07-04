@@ -30,19 +30,15 @@ import com.leocardz.link.preview.library.SourceContent;
 import com.leocardz.link.preview.library.TextCrawler;
 
 import java.util.List;
-import java.util.Random;
 
 
 @SuppressWarnings("unused")
-public class Main extends ActionBarActivity {
-
-    private EditText editText, editTextTitlePost, editTextDescriptionPost;
-    private Button submitButton, postButton, randomButton;
+public class TestActivity extends ActionBarActivity {
 
     private Context context;
 
     private TextCrawler textCrawler;
-    private ViewGroup dropPreview, dropPost;
+    private ViewGroup dropPreview;
 
     private TextView previewAreaTitle, postAreaTitle;
 
@@ -58,22 +54,18 @@ public class Main extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         context = this;
+        setContentView(R.layout.activity_test);
 
-        setContentView(R.layout.main);
+        textCrawler = new TextCrawler();
 
-        editText = (EditText) findViewById(R.id.input);
-        editTextTitlePost = null;
-        editTextDescriptionPost = null;
+        previewAreaTitle = (TextView) findViewById(R.id.preview_area);
+        postAreaTitle = (TextView) findViewById(R.id.post_area);
+
+        /** Where the previews will be dropped */
+        dropPreview = (ViewGroup) findViewById(R.id.drop_preview);
 
         /** --- From ShareVia Intent */
-        if (getIntent().getExtras() != null) {
-            String shareVia = (String) getIntent().getExtras().get(Intent.EXTRA_TEXT);
-            if (shareVia != null) {
-                editText.setText(shareVia);
-            }
-        }
         if (getIntent().getAction() == Intent.ACTION_VIEW) {
             Uri data = getIntent().getData();
             String scheme = data.getScheme();
@@ -92,142 +84,9 @@ public class Main extends ActionBarActivity {
 
             System.out.println(builded);
 
-            editText.setText(builded);
-
+            textCrawler.makePreview(callback, builded);
         }
         /** --- */
-
-        submitButton = (Button) findViewById(R.id.action_go);
-        randomButton = (Button) findViewById(R.id.random);
-        postButton = (Button) findViewById(R.id.post);
-
-        previewAreaTitle = (TextView) findViewById(R.id.preview_area);
-        postAreaTitle = (TextView) findViewById(R.id.post_area);
-
-        /** Where the previews will be dropped */
-        dropPreview = (ViewGroup) findViewById(R.id.drop_preview);
-
-        /** Where the previews will be dropped */
-        dropPost = (ViewGroup) findViewById(R.id.drop_post);
-
-        textCrawler = new TextCrawler();
-
-        initSubmitButton();
-        initPostButton();
-        initRandomButton();
-
-    }
-
-    /**
-     * Adding listener to the random button
-     */
-    private void initRandomButton() {
-        randomButton.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View arg0) {
-                editText.setText("");
-                editText.setText(getRandomUrl());
-            }
-        });
-    }
-
-    /**
-     * Adding listener to the post button
-     */
-    private void initPostButton() {
-        postButton.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                postAreaTitle.setVisibility(View.VISIBLE);
-                previewAreaTitle.setVisibility(View.GONE);
-                postButton.setVisibility(View.GONE);
-                submitButton.setEnabled(true);
-
-                /** Inflating the preview layout */
-                View mainView = getLayoutInflater().inflate(R.layout.main_view,
-                        null);
-
-                LinearLayout linearLayout = (LinearLayout) mainView
-                        .findViewById(R.id.external);
-
-                /**
-                 * Inflating the post content
-                 */
-                final View content = getLayoutInflater().inflate(
-                        R.layout.post_content, linearLayout);
-
-                /** Fullfilling the content layout */
-                final LinearLayout infoWrap = (LinearLayout) content
-                        .findViewById(R.id.info_wrap);
-
-                final TextView contentTextView = (TextView) content
-                        .findViewById(R.id.post_content);
-                final ImageView imageView = (ImageView) content
-                        .findViewById(R.id.image_post);
-                final TextView titleTextView = (TextView) content
-                        .findViewById(R.id.title);
-
-                final TextView urlTextView = (TextView) content
-                        .findViewById(R.id.url);
-                final TextView descriptionTextView = (TextView) content
-                        .findViewById(R.id.description);
-
-                contentTextView.setText(TextCrawler.extendedTrim(editText
-                        .getText().toString()));
-
-                if (currentImage != null && !noThumb) {
-                    imageView.setImageBitmap(currentImage);
-                } else {
-                    showHideImage(imageView, infoWrap, false);
-                }
-
-                if (!currentTitle.equals(""))
-                    titleTextView.setText(currentTitle);
-                else
-                    titleTextView.setVisibility(View.GONE);
-
-                if (!currentDescription.equals(""))
-                    descriptionTextView.setText(currentDescription);
-                else
-                    descriptionTextView.setVisibility(View.GONE);
-
-                urlTextView.setText(currentCannonicalUrl);
-
-                final String currentUrlLocal = currentUrl;
-
-                mainView.setOnClickListener(new OnClickListener() {
-
-                    @Override
-                    public void onClick(View arg0) {
-                        String url = currentUrlLocal;
-                        Intent i = new Intent(Intent.ACTION_VIEW);
-                        i.setData(Uri.parse(url));
-                        startActivity(i);
-                    }
-                });
-
-                dropPost.addView(mainView, 0);
-                dropPreview.removeAllViews();
-            }
-        });
-    }
-
-    /**
-     * Adding listener to the button
-     */
-    public void initSubmitButton() {
-        submitButton.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View arg0) {
-
-                textCrawler
-                        .makePreview(callback, editText.getText().toString());
-                // , TextCrawler.NONE);
-            }
-        });
     }
 
     /** Callback to update your view. Totally customizable. */
@@ -252,14 +111,11 @@ public class Main extends ActionBarActivity {
             currentImageSet = null;
             currentItem = 0;
 
-            postButton.setVisibility(View.GONE);
             previewAreaTitle.setVisibility(View.VISIBLE);
 
             currentImage = null;
             noThumb = false;
             currentTitle = currentDescription = currentUrl = currentCannonicalUrl = "";
-
-            submitButton.setEnabled(false);
 
             /** Inflating the preview layout */
             mainView = getLayoutInflater().inflate(R.layout.main_view, null);
@@ -302,8 +158,6 @@ public class Main extends ActionBarActivity {
                 });
 
             } else {
-                postButton.setVisibility(View.VISIBLE);
-
                 currentImageSet = new Bitmap[sourceContent.getImages().size()];
 
                 /**
@@ -345,9 +199,6 @@ public class Main extends ActionBarActivity {
                         .findViewById(R.id.post_previous);
                 final Button forwardButton = (Button) thumbnailOptions
                         .findViewById(R.id.post_forward);
-
-                editTextTitlePost = titleEditText;
-                editTextDescriptionPost = descriptionEditText;
 
                 titleTextView.setOnClickListener(new OnClickListener() {
 
@@ -514,8 +365,6 @@ public class Main extends ActionBarActivity {
                 titleTextView.setText(sourceContent.getTitle());
                 urlTextView.setText(sourceContent.getCannonicalUrl());
                 descriptionTextView.setText(sourceContent.getDescription());
-
-                postButton.setVisibility(View.VISIBLE);
             }
 
             currentTitle = sourceContent.getTitle();
@@ -590,12 +439,7 @@ public class Main extends ActionBarActivity {
      * Hide keyboard
      */
     private void hideSoftKeyboard() {
-        hideSoftKeyboard(editText);
 
-        if (editTextTitlePost != null)
-            hideSoftKeyboard(editTextTitlePost);
-        if (editTextDescriptionPost != null)
-            hideSoftKeyboard(editTextDescriptionPost);
     }
 
     private void hideSoftKeyboard(EditText editText) {
@@ -604,33 +448,7 @@ public class Main extends ActionBarActivity {
                 .hideSoftInputFromWindow(editText.getWindowToken(), 0);
     }
 
-    /**
-     * Just a set of urls
-     */
-    private final String[] RANDOM_URLS = {
-            "http://vnexpress.net/ ",
-            "http://facebook.com/ ",
-            "http://gmail.com",
-            "http://goo.gl/jKCPgp",
-            "http://www3.nhk.or.jp/",
-            "http://habrahabr.ru",
-            "http://www.youtube.com/watch?v=cv2mjAgFTaI",
-            "http://vimeo.com/67992157",
-            "https://lh6.googleusercontent.com/-aDALitrkRFw/UfQEmWPMQnI/AAAAAAAFOlQ/mDh1l4ej15k/w337-h697-no/db1969caa4ecb88ef727dbad05d5b5b3.jpg",
-            "http://www.nasa.gov/", "http://twitter.com",
-            "http://bit.ly/14SD1eR"};
-
-    /**
-     * Returns a random url
-     */
-    private String getRandomUrl() {
-        int random = new Random().nextInt(RANDOM_URLS.length);
-        return RANDOM_URLS[random];
-    }
-
     private void releasePreviewArea() {
-        submitButton.setEnabled(true);
-        postButton.setVisibility(View.GONE);
         previewAreaTitle.setVisibility(View.GONE);
         dropPreview.removeAllViews();
     }

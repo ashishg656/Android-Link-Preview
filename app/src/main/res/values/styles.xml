@@ -12,6 +12,22 @@
         <item name="android:actionMenuTextColor">@android:color/white</item>
     </style>
 
+    <style name="NoActionBarThemeTransparentStatusBar" parent="@style/App.Theme">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:typeface">normal</item>
+    </style>
+
+    <style name="Theme.Transparent" parent="NoActionBarThemeTransparentStatusBar">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:windowAnimationStyle">@null</item>
+        <item name="android:backgroundDimEnabled">true</item>
+    </style>
+
     <style name="App.ThemeMainWhite" parent="App.Theme">
         <item name="android:actionMenuTextColor">@android:color/white</item>
         <item name="android:dividerVertical">@drawable/divider_vertical_dark</item>
