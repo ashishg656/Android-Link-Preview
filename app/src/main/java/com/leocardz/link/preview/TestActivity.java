@@ -29,8 +29,6 @@ import com.leocardz.link.preview.library.LinkPreviewCallback;
 import com.leocardz.link.preview.library.SourceContent;
 import com.leocardz.link.preview.library.TextCrawler;
 
-import java.util.List;
-
 
 @SuppressWarnings("unused")
 public class TestActivity extends ActionBarActivity {
@@ -68,23 +66,23 @@ public class TestActivity extends ActionBarActivity {
         /** --- From ShareVia Intent */
         if (getIntent().getAction() == Intent.ACTION_VIEW) {
             Uri data = getIntent().getData();
-            String scheme = data.getScheme();
-            String host = data.getHost();
-            List<String> params = data.getPathSegments();
-            String builded = scheme + "://" + host + "/";
+//            String scheme = data.getScheme();
+//            String host = data.getHost();
+//            List<String> params = data.getPathSegments();
+//            String builded = scheme + "://" + host + "/";
+//
+//            for (String string : params) {
+//                builded += string + "/";
+//            }
+//
+//            if (data.getQuery() != null && !data.getQuery().equals("")) {
+//                builded = builded.substring(0, builded.length() - 1);
+//                builded += "?" + data.getQuery();
+//            }
+//
+//            System.out.println(builded);
 
-            for (String string : params) {
-                builded += string + "/";
-            }
-
-            if (data.getQuery() != null && !data.getQuery().equals("")) {
-                builded = builded.substring(0, builded.length() - 1);
-                builded += "?" + data.getQuery();
-            }
-
-            System.out.println(builded);
-
-            textCrawler.makePreview(callback, builded);
+            textCrawler.makePreview(callback, data.toString());
         }
         /** --- */
     }
@@ -111,7 +109,7 @@ public class TestActivity extends ActionBarActivity {
             currentImageSet = null;
             currentItem = 0;
 
-            previewAreaTitle.setVisibility(View.VISIBLE);
+            previewAreaTitle.setVisibility(View.GONE);
 
             currentImage = null;
             noThumb = false;
