@@ -26,27 +26,27 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:mimeType="text/plain" />
             </intent-filter>
+
             <intent-filter>
                 <data
-                    android:host="www.amazon.in"
-                    android:scheme="https" />
+                    android:host="video"
+                    android:scheme="houseofgod" />
+
                 <data
                     android:host="www.amazon.com"
                     android:scheme="https" />
                 <data
-                    android:host="*"
-                    android:scheme="http" />
+                    android:host="www.amazon.in"
+                    android:scheme="https" />
                 <data
                     android:host="www.flipkart.com"
                     android:scheme="https" />
-
                 <data
                     android:host="houseofgod.app.link"
                     android:scheme="https" />
-
                 <data
-                    android:host="video"
-                    android:scheme="houseofgod" />
+                    android:host="zoma.to"
+                    android:scheme="http" />
 
                 <action android:name="android.intent.action.VIEW" />
 
